@@ -1,18 +1,19 @@
-from sqlalchemy import Boolean
 from sqlalchemy import DateTime
+from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
+from sqlalchemy import Text
+
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
 
 from datetime import datetime
 
-from app.database import Base
+from app.database.base import Base
 
-
-class Chatbot(Base):
-    __tablename__ = "chatbots"
+class KnowledgeBase(Base):
+    __tablename__ = "knowledge_bases"
 
     id: Mapped[int] = mapped_column(
         Integer,
@@ -20,24 +21,24 @@ class Chatbot(Base):
         index=True
     )
 
-    name: Mapped[str] = mapped_column(
-        String(100),
+    chatbot_id: Mapped[int] = mapped_column(
+        ForeignKey("chatbots.id"),
         nullable=False
     )
 
-    description: Mapped[str] = mapped_column(
-        String(500),
+    title: Mapped[str] = mapped_column(
+        String(255),
         nullable=False
     )
 
-    model_name: Mapped[str] = mapped_column(
+    source_type: Mapped[str] = mapped_column(
         String(50),
         nullable=False
     )
 
-    is_active: Mapped[bool] = mapped_column(
-        Boolean,
-        default=True
+    content: Mapped[str] = mapped_column(
+        Text,
+        nullable=False
     )
 
     created_at: Mapped[datetime] = mapped_column(
@@ -51,8 +52,7 @@ class Chatbot(Base):
         onupdate=datetime.utcnow
     )
 
-    knowledge_bases = relationship(
-        "KnowledgeBase",
-        back_populates="chatbot",
-        cascade="all, delete"
+    chatbot = relationship(
+        "Chatbot",
+        back_populates="knowledge_bases"
     )

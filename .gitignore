@@ -1,6 +1,33 @@
+# Virtual Environment
 .venv/
+
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+
+# Environment Variables
 .env
+
+# IDE
 .vscode/
 .idea/
+
+# macOS
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+
+# MyPy
+.mypy_cache/
+
+# Ruff
+.ruff_cache/
