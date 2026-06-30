@@ -10,8 +10,12 @@ from app.schemas.chatbot import (
 def create_chatbot(
     db: Session,
     chatbot: ChatbotCreate,
+    owner_id: int,
 ):
-    db_chatbot = Chatbot(**chatbot.model_dump())
+    db_chatbot = Chatbot(
+        **chatbot.model_dump(),
+        owner_id=owner_id,
+    )
 
     db.add(db_chatbot)
     db.commit()

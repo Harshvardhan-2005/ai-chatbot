@@ -1,12 +1,13 @@
+from datetime import datetime
+
 from sqlalchemy import Boolean
 from sqlalchemy import DateTime
+from sqlalchemy import ForeignKey
 from sqlalchemy import Integer
 from sqlalchemy import String
 from sqlalchemy.orm import Mapped
 from sqlalchemy.orm import mapped_column
 from sqlalchemy.orm import relationship
-
-from datetime import datetime
 
 from app.database.base import Base
 
@@ -33,6 +34,14 @@ class Chatbot(Base):
         String(50),
         nullable=False
     )
+    owner_id: Mapped[int] = mapped_column(
+    ForeignKey("users.id"),
+    nullable=False,
+    )
+    owner = relationship(
+    "User",
+    back_populates="chatbots",
+    )
 
     is_active: Mapped[bool] = mapped_column(
         Boolean,
@@ -49,7 +58,7 @@ class Chatbot(Base):
         default=datetime.utcnow,
         onupdate=datetime.utcnow
     )
-
+    
     knowledge_bases = relationship(
     "KnowledgeBase",
     back_populates="chatbot",
@@ -61,3 +70,4 @@ class Chatbot(Base):
     back_populates="chatbot",
     cascade="all, delete",
     )
+    

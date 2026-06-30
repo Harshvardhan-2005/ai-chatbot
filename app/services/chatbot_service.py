@@ -10,10 +10,12 @@ from app.schemas.chatbot import (
 def create_chatbot(
     db: Session,
     chatbot: ChatbotCreate,
+    owner_id: int,
 ):
     return chatbot_repository.create_chatbot(
         db,
         chatbot,
+        owner_id,
     )
 
 

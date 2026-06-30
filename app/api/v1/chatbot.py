@@ -1,3 +1,5 @@
+from app.core.security import get_current_user
+from app.models.user import User
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -30,8 +32,13 @@ router = APIRouter(
 def create_chatbot_api(
     chatbot: ChatbotCreate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    return create_chatbot(db, chatbot)
+    return create_chatbot(
+        db,
+        chatbot,
+        current_user.id,
+    )
 
 
 @router.get(
