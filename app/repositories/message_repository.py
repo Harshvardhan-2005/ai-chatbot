@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
-from app.models import Message
+from app.models.conversation import Conversation
+from app.models.message import Message
 from app.schemas.message import (
     MessageCreate,
     MessageUpdate,
@@ -11,7 +12,20 @@ def create_message(
     db: Session,
     message: MessageCreate,
 ):
-    db_message = Message(**message.model_dump())
+    conversation = (
+        db.query(Conversation)
+        .filter(
+            Conversation.id == message.conversation_id,
+        )
+        .first()
+    )
+
+    if not conversation:
+        return None
+
+    db_message = Message(
+        **message.model_dump()
+    )
 
     db.add(db_message)
     db.commit()
@@ -50,7 +64,9 @@ def search_messages(
 ):
     return (
         db.query(Message)
-        .filter(Message.content.ilike(f"%{keyword}%"))
+        .filter(
+            Message.content.ilike(f"%{keyword}%")
+        )
         .all()
     )
 

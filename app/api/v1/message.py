@@ -2,11 +2,13 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database.session import get_db
+
 from app.schemas.message import (
     MessageCreate,
     MessageUpdate,
     MessageResponse,
 )
+
 from app.services.message_service import (
     create_message,
     get_message,
@@ -31,7 +33,18 @@ def create_message_api(
     message: MessageCreate,
     db: Session = Depends(get_db),
 ):
-    return create_message(db, message)
+    created = create_message(
+        db,
+        message,
+    )
+
+    if not created:
+        raise HTTPException(
+            status_code=404,
+            detail="Conversation not found",
+        )
+
+    return created
 
 
 @router.get(
@@ -44,6 +57,7 @@ def get_messages_api(
     db: Session = Depends(get_db),
 ):
     skip = (page - 1) * size
+
     return get_messages(
         db,
         skip,

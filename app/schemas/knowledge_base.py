@@ -1,24 +1,14 @@
-from pydantic import BaseModel
-from pydantic import Field
 from datetime import datetime
+
+from pydantic import BaseModel
+from pydantic import ConfigDict
 
 
 class KnowledgeBaseCreate(BaseModel):
     chatbot_id: int
-
-    title: str = Field(
-        min_length=3,
-        max_length=255
-    )
-
-    source_type: str = Field(
-        min_length=2,
-        max_length=50
-    )
-
-    content: str = Field(
-        min_length=1
-    )
+    title: str
+    source_type: str
+    content: str
 
 
 class KnowledgeBaseUpdate(BaseModel):
@@ -36,6 +26,6 @@ class KnowledgeBaseResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
 
-    model_config = {
-        "from_attributes": True
-    }
+    model_config = ConfigDict(
+        from_attributes=True
+    )

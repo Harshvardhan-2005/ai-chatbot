@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from app.core.security import get_current_user
 from app.database.session import get_db
+from app.models.user import User
 
 from app.schemas.conversation import (
     ConversationCreate,
@@ -32,11 +34,21 @@ router = APIRouter(
 def create_conversation_api(
     conversation: ConversationCreate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    return create_conversation(
+    created = create_conversation(
         db,
         conversation,
+        current_user.id,
     )
+
+    if not created:
+        raise HTTPException(
+            status_code=404,
+            detail="Chatbot not found or does not belong to you",
+        )
+
+    return created
 
 
 @router.get(
@@ -47,11 +59,13 @@ def get_conversations_api(
     page: int = 1,
     size: int = 10,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     skip = (page - 1) * size
 
     return get_conversations(
         db,
+        current_user.id,
         skip,
         size,
     )
@@ -61,9 +75,11 @@ def get_conversations_api(
 def search_conversations_api(
     keyword: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     return search_conversations(
         db,
+        current_user.id,
         keyword,
     )
 
@@ -75,10 +91,12 @@ def search_conversations_api(
 def get_conversation_api(
     conversation_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     conversation = get_conversation(
         db,
         conversation_id,
+        current_user.id,
     )
 
     if not conversation:
@@ -98,11 +116,13 @@ def update_conversation_api(
     conversation_id: int,
     conversation: ConversationUpdate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     updated = update_conversation(
         db,
         conversation_id,
         conversation,
+        current_user.id,
     )
 
     if not updated:
@@ -120,10 +140,12 @@ def update_conversation_api(
 def delete_conversation_api(
     conversation_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     success = delete_conversation(
         db,
         conversation_id,
+        current_user.id,
     )
 
     if not success:

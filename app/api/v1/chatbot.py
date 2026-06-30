@@ -1,9 +1,9 @@
-from app.core.security import get_current_user
-from app.models.user import User
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from app.core.security import get_current_user
 from app.database.session import get_db
+from app.models.user import User
 from app.schemas.chatbot import (
     ChatbotCreate,
     ChatbotResponse,
@@ -49,17 +49,29 @@ def get_chatbots_api(
     page: int = 1,
     size: int = 10,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     skip = (page - 1) * size
-    return get_chatbots(db, skip, size)
+
+    return get_chatbots(
+        db,
+        current_user.id,
+        skip,
+        size,
+    )
 
 
 @router.get("/search")
 def search_chatbots_api(
     keyword: str,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    return search_chatbots(db, keyword)
+    return search_chatbots(
+        db,
+        current_user.id,
+        keyword,
+    )
 
 
 @router.get(
@@ -69,8 +81,13 @@ def search_chatbots_api(
 def get_chatbot_api(
     chatbot_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    chatbot = get_chatbot(db, chatbot_id)
+    chatbot = get_chatbot(
+        db,
+        chatbot_id,
+        current_user.id,
+    )
 
     if not chatbot:
         raise HTTPException(
@@ -89,11 +106,13 @@ def update_chatbot_api(
     chatbot_id: int,
     chatbot: ChatbotUpdate,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
     updated = update_chatbot(
         db,
         chatbot_id,
         chatbot,
+        current_user.id,
     )
 
     if not updated:
@@ -109,8 +128,13 @@ def update_chatbot_api(
 def delete_chatbot_api(
     chatbot_id: int,
     db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    success = delete_chatbot(db, chatbot_id)
+    success = delete_chatbot(
+        db,
+        chatbot_id,
+        current_user.id,
+    )
 
     if not success:
         raise HTTPException(
