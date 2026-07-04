@@ -4,11 +4,8 @@ from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
-from app.models.conversation import Conversation
-from app.models.message import Message
-
+from app.repositories import chat_repository
 from app.schemas.chat import ChatRequest, ChatResponse
-
 from app.services.llm_service import (
     generate_response,
     generate_title,
@@ -27,12 +24,9 @@ def chat_with_ai(
     )
 
     # Check if conversation exists
-    conversation = (
-        db.query(Conversation)
-        .filter(
-            Conversation.id == chat_request.conversation_id
-        )
-        .first()
+    conversation = chat_repository.get_conversation(
+        db,
+        chat_request.conversation_id,
     )
 
     if not conversation:
@@ -46,13 +40,9 @@ def chat_with_ai(
         )
 
     # Load previous conversation history
-    history = (
-        db.query(Message)
-        .filter(
-            Message.conversation_id == chat_request.conversation_id
-        )
-        .order_by(Message.created_at)
-        .all()
+    history = chat_repository.get_history(
+        db,
+        chat_request.conversation_id,
     )
 
     logger.info(
@@ -72,8 +62,9 @@ def chat_with_ai(
 
     # Generate title only for the first message
     if len(history) == 0:
-        conversation.title = generate_title(
-            chat_request.message
+        chat_repository.update_title(
+            conversation,
+            generate_title(chat_request.message),
         )
 
         logger.info(
@@ -92,32 +83,17 @@ def chat_with_ai(
     # Generate AI response
     ai_response = generate_response(messages)
 
-    logger.info("LLM response generated successfully.")
+    logger.info(
+        "LLM response generated successfully."
+    )
 
     try:
-        # Save user message
-        user_message = Message(
-            conversation_id=chat_request.conversation_id,
-            role="user",
-            content=chat_request.message,
+        chat_repository.save_messages(
+            db=db,
+            conversation=conversation,
+            user_message=chat_request.message,
+            assistant_message=ai_response,
         )
-
-        db.add(user_message)
-
-        # Save assistant message
-        assistant_message = Message(
-            conversation_id=chat_request.conversation_id,
-            role="assistant",
-            content=ai_response,
-        )
-
-        db.add(assistant_message)
-
-        db.commit()
-
-        db.refresh(user_message)
-        db.refresh(assistant_message)
-        db.refresh(conversation)
 
         logger.info(
             "Successfully saved chat for conversation %s",

@@ -17,20 +17,52 @@ def get_conversation(
     )
 
 
-def create_message(
+def get_history(
     db: Session,
     conversation_id: int,
-    role: str,
-    content: str,
 ):
-    db_message = Message(
-        conversation_id=conversation_id,
-        role=role,
-        content=content,
+    return (
+        db.query(Message)
+        .filter(
+            Message.conversation_id == conversation_id
+        )
+        .order_by(Message.created_at)
+        .all()
     )
 
-    db.add(db_message)
-    db.commit()
-    db.refresh(db_message)
 
-    return db_message
+def update_title(
+    conversation: Conversation,
+    title: str,
+):
+    conversation.title = title
+
+
+def save_messages(
+    db: Session,
+    conversation: Conversation,
+    user_message: str,
+    assistant_message: str,
+):
+    user = Message(
+        conversation_id=conversation.id,
+        role="user",
+        content=user_message,
+    )
+
+    assistant = Message(
+        conversation_id=conversation.id,
+        role="assistant",
+        content=assistant_message,
+    )
+
+    db.add(user)
+    db.add(assistant)
+
+    db.commit()
+
+    db.refresh(user)
+    db.refresh(assistant)
+    db.refresh(conversation)
+
+    return user, assistant
