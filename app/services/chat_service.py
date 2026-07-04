@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 def chat_with_ai(
     db: Session,
     chat_request: ChatRequest,
+    owner_id: int,
 ) -> ChatResponse:
     logger.info(
         "Processing chat request for conversation %s",
@@ -27,6 +28,7 @@ def chat_with_ai(
     conversation = chat_repository.get_conversation(
         db,
         chat_request.conversation_id,
+        owner_id,
     )
 
     if not conversation:

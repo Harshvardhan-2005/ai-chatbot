@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-
+from app.models.chatbot import Chatbot
 from app.models.conversation import Conversation
 from app.models.message import Message
 
@@ -7,11 +7,17 @@ from app.models.message import Message
 def get_conversation(
     db: Session,
     conversation_id: int,
+    owner_id: int,
 ):
     return (
         db.query(Conversation)
+        .join(
+            Chatbot,
+            Conversation.chatbot_id == Chatbot.id,
+        )
         .filter(
-            Conversation.id == conversation_id
+            Conversation.id == conversation_id,
+            Chatbot.owner_id == owner_id,
         )
         .first()
     )
