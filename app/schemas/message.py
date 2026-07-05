@@ -1,16 +1,20 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel
 from pydantic import Field
 
 
 class MessageCreate(BaseModel):
-    conversation_id: int
-
-    role: str = Field(
-        min_length=3,
-        max_length=20,
+    conversation_id: int = Field(
+        gt=0,
     )
+
+    role: Literal[
+        "user",
+        "assistant",
+        "system",
+    ]
 
     content: str = Field(
         min_length=1,
@@ -18,8 +22,16 @@ class MessageCreate(BaseModel):
 
 
 class MessageUpdate(BaseModel):
-    role: str | None = None
-    content: str | None = None
+    role: Literal[
+        "user",
+        "assistant",
+        "system",
+    ] | None = None
+
+    content: str | None = Field(
+        default=None,
+        min_length=1,
+    )
 
 
 class MessageResponse(BaseModel):
