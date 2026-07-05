@@ -1,6 +1,9 @@
 from sqlalchemy.orm import Session
+
 from app.models.chatbot import Chatbot
 from app.models.conversation import Conversation
+from app.models.knowledge_base import KnowledgeBase
+from app.models.knowledge_base import KnowledgeBase
 from app.models.message import Message
 
 
@@ -33,6 +36,20 @@ def get_history(
             Message.conversation_id == conversation_id
         )
         .order_by(Message.created_at)
+        .all()
+    )
+
+
+def get_chatbot_knowledge(
+    db: Session,
+    chatbot_id: int,
+):
+    return (
+        db.query(KnowledgeBase)
+        .filter(
+            KnowledgeBase.chatbot_id == chatbot_id
+        )
+        .order_by(KnowledgeBase.created_at)
         .all()
     )
 

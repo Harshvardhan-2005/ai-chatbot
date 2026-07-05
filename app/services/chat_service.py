@@ -52,7 +52,32 @@ def chat_with_ai(
         len(history),
     )
 
+    knowledge_bases = chat_repository.get_chatbot_knowledge(
+        db,
+        conversation.chatbot_id,
+    )
+
     messages = []
+
+    if knowledge_bases:
+        knowledge_context = "\n\n".join(
+            (
+                f"Title: {knowledge.title}\n"
+                f"Content: {knowledge.content}"
+            )
+            for knowledge in knowledge_bases
+        )
+
+        messages.append(
+            {
+                "role": "system",
+                "content": (
+                    "Use the following chatbot knowledge base "
+                    "to help answer the user's questions.\n\n"
+                    f"{knowledge_context}"
+                ),
+            }
+        )
 
     for msg in history:
         messages.append(
