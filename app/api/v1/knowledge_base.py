@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.core.security import get_current_user
@@ -56,8 +56,15 @@ def create_knowledge_base_api(
     response_model=list[KnowledgeBaseResponse],
 )
 def get_knowledge_bases_api(
-    page: int = 1,
-    size: int = 10,
+    page: int = Query(
+        default=1,
+        ge=1,
+    ),
+    size: int = Query(
+        default=10,
+        ge=1,
+        le=100,
+    ),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
