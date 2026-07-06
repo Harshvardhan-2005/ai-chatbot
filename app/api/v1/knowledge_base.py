@@ -13,12 +13,13 @@ from app.schemas.knowledge_base import (
 
 from app.services.knowledge_base_service import (
     create_knowledge_base,
+    delete_knowledge_base,
     get_knowledge_base,
     get_knowledge_bases,
     search_knowledge_bases,
     update_knowledge_base,
-    delete_knowledge_base,
 )
+
 
 router = APIRouter(
     prefix="/knowledge-bases",
@@ -56,6 +57,10 @@ def create_knowledge_base_api(
     response_model=list[KnowledgeBaseResponse],
 )
 def get_knowledge_bases_api(
+    chatbot_id: int | None = Query(
+        default=None,
+        gt=0,
+    ),
     page: int = Query(
         default=1,
         ge=1,
@@ -73,20 +78,32 @@ def get_knowledge_bases_api(
     return get_knowledge_bases(
         db,
         current_user.id,
+        chatbot_id,
         skip,
         size,
     )
 
 
-@router.get("/search")
+@router.get(
+    "/search",
+    response_model=list[KnowledgeBaseResponse],
+)
 def search_knowledge_bases_api(
-    keyword: str,
+    keyword: str = Query(
+        min_length=1,
+        max_length=255,
+    ),
+    chatbot_id: int | None = Query(
+        default=None,
+        gt=0,
+    ),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     return search_knowledge_bases(
         db,
         current_user.id,
+        chatbot_id,
         keyword,
     )
 

@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 
 import app.repositories.knowledge_base_repository as knowledge_base_repository
+
 from app.schemas.knowledge_base import (
     KnowledgeBaseCreate,
     KnowledgeBaseUpdate,
@@ -34,12 +35,14 @@ def get_knowledge_base(
 def get_knowledge_bases(
     db: Session,
     owner_id: int,
+    chatbot_id: int | None,
     skip: int,
     limit: int,
 ):
     return knowledge_base_repository.get_knowledge_bases(
         db,
         owner_id,
+        chatbot_id,
         skip,
         limit,
     )
@@ -48,11 +51,13 @@ def get_knowledge_bases(
 def search_knowledge_bases(
     db: Session,
     owner_id: int,
+    chatbot_id: int | None,
     keyword: str,
 ):
     return knowledge_base_repository.search_knowledge_bases(
         db,
         owner_id,
+        chatbot_id,
         keyword,
     )
 

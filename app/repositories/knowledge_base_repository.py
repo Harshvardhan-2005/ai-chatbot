@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.models.chatbot import Chatbot
 from app.models.knowledge_base import KnowledgeBase
+
 from app.schemas.knowledge_base import (
     KnowledgeBaseCreate,
     KnowledgeBaseUpdate,
@@ -55,13 +56,26 @@ def get_knowledge_base(
 def get_knowledge_bases(
     db: Session,
     owner_id: int,
+    chatbot_id: int | None,
     skip: int,
     limit: int,
 ):
-    return (
+    query = (
         db.query(KnowledgeBase)
         .join(Chatbot)
-        .filter(Chatbot.owner_id == owner_id)
+        .filter(
+            Chatbot.owner_id == owner_id,
+        )
+    )
+
+    if chatbot_id is not None:
+        query = query.filter(
+            KnowledgeBase.chatbot_id == chatbot_id,
+        )
+
+    return (
+        query
+        .order_by(KnowledgeBase.id.desc())
         .offset(skip)
         .limit(limit)
         .all()
@@ -71,15 +85,26 @@ def get_knowledge_bases(
 def search_knowledge_bases(
     db: Session,
     owner_id: int,
+    chatbot_id: int | None,
     keyword: str,
 ):
-    return (
+    query = (
         db.query(KnowledgeBase)
         .join(Chatbot)
         .filter(
             Chatbot.owner_id == owner_id,
             KnowledgeBase.title.ilike(f"%{keyword}%"),
         )
+    )
+
+    if chatbot_id is not None:
+        query = query.filter(
+            KnowledgeBase.chatbot_id == chatbot_id,
+        )
+
+    return (
+        query
+        .order_by(KnowledgeBase.id.desc())
         .all()
     )
 
@@ -104,7 +129,11 @@ def update_knowledge_base(
     )
 
     for key, value in update_data.items():
-        setattr(db_knowledge_base, key, value)
+        setattr(
+            db_knowledge_base,
+            key,
+            value,
+        )
 
     db.commit()
     db.refresh(db_knowledge_base)
