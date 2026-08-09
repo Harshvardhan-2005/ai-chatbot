@@ -42,13 +42,16 @@ function Sidebar() {
           <span>Assistants</span>
         </NavLink>
 
-        <div className="sidebar__coming-soon">
+        <NavLink
+          to="/conversations"
+          className={({ isActive }) =>
+            `sidebar__link ${isActive ? "sidebar__link--active" : ""}`
+          }
+        >
           <MessageSquareText size={18} strokeWidth={1.8} />
 
           <span>Conversations</span>
-
-          <span className="sidebar__badge">Soon</span>
-        </div>
+        </NavLink>
       </nav>
 
       <div className="sidebar__footer">
