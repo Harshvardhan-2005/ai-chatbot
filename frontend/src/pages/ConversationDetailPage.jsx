@@ -1,5 +1,5 @@
 import { ArrowLeft, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -20,7 +20,7 @@ import Spinner from "../components/ui/Spinner";
 function ConversationDetailPage() {
   const { conversationId } = useParams();
   const navigate = useNavigate();
-
+  const messagesContainerRef = useRef(null);
   const [conversation, setConversation] = useState(null);
   const [messages, setMessages] = useState([]);
 
@@ -48,10 +48,7 @@ function ConversationDetailPage() {
       setConversation(conversationData);
 
       setMessages(
-        messagesData.items ||
-          messagesData.data ||
-          messagesData ||
-          [],
+        messagesData.items || messagesData.data || messagesData || [],
       );
     } catch (requestError) {
       console.error(requestError);
@@ -69,6 +66,21 @@ function ConversationDetailPage() {
     loadConversation();
   }, [conversationId]);
 
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    requestAnimationFrame(() => {
+      container.scrollTo({
+        top: container.scrollHeight,
+        behavior: "smooth",
+      });
+    });
+  }, [messages, sending]);
+
   async function handleSend(content) {
     try {
       setSending(true);
@@ -78,29 +90,36 @@ function ConversationDetailPage() {
         message: content,
       });
 
+      const now = new Date().toISOString();
+
       if (response.user_message) {
         setMessages((current) => [
           ...current,
-          response.user_message,
+          {
+            id: `user-${Date.now()}`,
+            role: "user",
+            content: response.user_message,
+            created_at: now,
+          },
         ]);
       }
 
       if (response.assistant_message) {
         setMessages((current) => [
           ...current,
-          response.assistant_message,
+          {
+            id: `assistant-${Date.now()}`,
+            role: "assistant",
+            content: response.assistant_message,
+            created_at: new Date().toISOString(),
+          },
         ]);
-      }
-
-      if (!response.user_message && !response.assistant_message) {
-        await loadConversation();
       }
     } catch (requestError) {
       console.error(requestError);
 
       toast.error(
-        requestError.response?.data?.detail ||
-          "Unable to send message.",
+        requestError.response?.data?.detail || "Unable to send message.",
       );
     } finally {
       setSending(false);
@@ -109,10 +128,7 @@ function ConversationDetailPage() {
 
   async function handleRename(payload) {
     try {
-      const updated = await updateConversation(
-        conversation.id,
-        payload,
-      );
+      const updated = await updateConversation(conversation.id, payload);
 
       setConversation(updated);
       setEditOpen(false);
@@ -120,8 +136,7 @@ function ConversationDetailPage() {
       toast.success("Conversation renamed.");
     } catch (requestError) {
       toast.error(
-        requestError.response?.data?.detail ||
-          "Unable to rename conversation.",
+        requestError.response?.data?.detail || "Unable to rename conversation.",
       );
     }
   }
@@ -145,8 +160,7 @@ function ConversationDetailPage() {
       });
     } catch (requestError) {
       toast.error(
-        requestError.response?.data?.detail ||
-          "Unable to delete conversation.",
+        requestError.response?.data?.detail || "Unable to delete conversation.",
       );
     }
   }
@@ -169,10 +183,7 @@ function ConversationDetailPage() {
           <strong>Unable to load conversation</strong>
           <p>{error || "Conversation not found."}</p>
 
-          <button
-            type="button"
-            onClick={() => navigate("/conversations")}
-          >
+          <button type="button" onClick={() => navigate("/conversations")}>
             Back to conversations
           </button>
         </div>
@@ -239,7 +250,7 @@ function ConversationDetailPage() {
       </header>
 
       <section className="conversation-chat">
-        <div className="conversation-chat__messages">
+        <div className="conversation-chat__messages" ref={messagesContainerRef}>
           {messages.length === 0 ? (
             <div className="conversation-chat__empty">
               <h2>Start the conversation</h2>
@@ -247,10 +258,7 @@ function ConversationDetailPage() {
             </div>
           ) : (
             messages.map((message) => (
-              <MessageBubble
-                key={message.id}
-                message={message}
-              />
+              <MessageBubble key={message.id} message={message} />
             ))
           )}
 
