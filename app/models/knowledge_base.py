@@ -56,3 +56,9 @@ class KnowledgeBase(Base):
         "Chatbot",
         back_populates="knowledge_bases"
     )
+
+    documents = relationship(
+        "KnowledgeDocument",
+        back_populates="knowledge_base",
+        cascade="all, delete-orphan",
+    )

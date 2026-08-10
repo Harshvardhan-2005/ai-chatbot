@@ -7,7 +7,9 @@ from app.api.v1.chatbot import router as chatbot_router
 from app.api.v1.conversation import router as conversation_router
 from app.api.v1.knowledge_base import router as knowledge_base_router
 from app.api.v1.message import router as message_router
-
+from app.api.v1.knowledge_document import (
+    router as knowledge_document_router,
+)
 
 app = FastAPI(
     title="Deneb AI Chatbot Platform",
@@ -31,6 +33,7 @@ app.add_middleware(
 
 app.include_router(chatbot_router)
 app.include_router(knowledge_base_router)
+app.include_router(knowledge_document_router)
 app.include_router(conversation_router)
 app.include_router(message_router)
 app.include_router(auth_router)
