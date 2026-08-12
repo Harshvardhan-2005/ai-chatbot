@@ -1,90 +1,36 @@
 # Deneb — AI Chatbot Platform
 
-Deneb is a full-stack AI chatbot platform for creating, configuring, and managing knowledge-grounded AI assistants.
+Deneb is a full-stack AI chatbot platform that lets users create AI assistants, manage their knowledge, and have context-aware conversations.
 
-The platform combines a FastAPI backend, PostgreSQL persistence, JWT authentication, Groq-powered language models, and a React workspace for managing assistants and their knowledge sources.
+It solves the problem of building a chatbot that can answer questions using your own knowledge and maintain conversations securely instead of relying only on general-purpose AI responses.
 
 ## Features
 
-### Authentication and Security
-
-- User registration and login
-- JWT-based authentication
-- bcrypt password hashing
-- Protected API routes
-- Ownership-based resource authorization
-- User-scoped data access
-
-### AI Assistant Management
-
-- Create AI assistants
-- View and search assistants
-- Update assistant configuration
-- Delete assistants
-- Configure model selection
-- Enable or disable assistants
-- Paginated assistant listings
-
-### Knowledge Management
-
-- Add knowledge sources to individual assistants
-- Search knowledge sources by title
-- Update knowledge content
-- Delete knowledge sources
-- Assistant-specific knowledge isolation
+- User authentication with JWT
+- Create and manage AI assistants
+- Add and manage knowledge sources
 - Knowledge-grounded AI responses
+- Persistent conversations and messages
+- Search and pagination
+- Protected user-specific data
+- React-based frontend workspace
+- REST APIs with FastAPI
 
-### AI Chat
+## Tech Stack
 
-- Groq-powered language model integration
-- Persistent conversation history
-- Automatic conversation title generation
-- Knowledge context injection
-- Assistant-specific knowledge retrieval
-- Multi-turn conversation support
-- Message persistence
+- **Frontend:** React.js
+- **Backend:** Python, FastAPI
+- **Database:** PostgreSQL
+- **ORM:** SQLAlchemy
+- **Authentication:** JWT, bcrypt
+- **AI:** Groq
+- **Migrations:** Alembic
+- **Tools:** Git, GitHub, uv
 
-### Conversation and Message APIs
+## Getting Started
 
-- Complete conversation CRUD operations
-- Complete message CRUD operations
-- Search APIs
-- Pagination
-- Ownership validation
-- Conversation history management
+### 1. Clone the repository
 
-### Frontend Workspace
-
-- React-based assistant management interface
-- JWT authentication flow
-- Protected application routes
-- Assistant creation and editing
-- Knowledge management interface
-- Search with debounced API requests
-- Pagination
-- Loading and error states
-- Toast notifications
-- Responsive workspace UI
-
-## Architecture
-
-Deneb follows a layered backend architecture:
-
-```text
-Client
-  |
-  v
-FastAPI Router
-  |
-  v
-Service Layer
-  |
-  v
-Repository Layer
-  |
-  v
-SQLAlchemy ORM
-  |
-  v
-PostgreSQL
-```
+```bash
+git clone https://github.com/Harshvardhan-2005/ai-chatbot.git
+cd ai-chatbot
