@@ -1,6 +1,6 @@
 # Kioku AI
 
-Deneb is a full-stack AI chatbot platform that lets users create AI assistants, manage their knowledge, and have context-aware conversations.
+Kioku AI is a full-stack AI chatbot platform that lets users create AI assistants, manage their knowledge, and have context-aware conversations.
 
 It solves the problem of building a chatbot that can answer questions using your own knowledge and maintain conversations securely instead of relying only on general-purpose AI responses.
 
