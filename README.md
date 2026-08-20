@@ -1,4 +1,4 @@
-# Deneb — AI Chatbot Platform
+# Kioku AI
 
 Deneb is a full-stack AI chatbot platform that lets users create AI assistants, manage their knowledge, and have context-aware conversations.
 
