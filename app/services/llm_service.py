@@ -13,24 +13,28 @@ def generate_response(
 ) -> str:
 
     completion = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-120b",
         messages=messages,
     )
 
     return completion.choices[0].message.content
 
+
 def generate_title(first_message: str) -> str:
     prompt = f"""
-Generate a short conversation title (maximum 5 words).
+Generate a short title for this conversation.
 
-Message:
+User message:
 {first_message}
 
-Return ONLY the title.
+Rules:
+- Maximum 5 words
+- Return only the title
+- Do not use quotation marks
 """
 
     completion = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
+        model="openai/gpt-oss-120b",
         messages=[
             {
                 "role": "user",
@@ -38,7 +42,12 @@ Return ONLY the title.
             }
         ],
         temperature=0.2,
-        max_tokens=20,
+        max_tokens=50,
     )
 
-    return completion.choices[0].message.content.strip().replace('"', "")
+    title = completion.choices[0].message.content
+
+    if not title:
+        return first_message[:50]
+
+    return title.strip().replace('"', "")
