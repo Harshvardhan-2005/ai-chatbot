@@ -96,7 +96,7 @@ function LoginPage() {
         <div className="auth-card__header">
           <p className="auth-card__eyebrow">Welcome back</p>
 
-          <h1 className="auth-card__title">Sign in to Deneb</h1>
+          <h1 className="auth-card__title">Sign in to KiokuAI</h1>
 
           <p className="auth-card__description">
             Continue building and testing your AI assistants.
@@ -136,7 +136,7 @@ function LoginPage() {
         </form>
 
         <p className="auth-card__switch">
-          New to Deneb?{" "}
+          New to KiokuAI?{" "}
           <Link to="/register" className="auth-card__link">
             Create an account
           </Link>

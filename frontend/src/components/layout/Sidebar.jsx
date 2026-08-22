@@ -21,7 +21,7 @@ function Sidebar() {
           <div className="sidebar__brand-mark">D</div>
 
           <div>
-            <p className="sidebar__brand-name">Deneb</p>
+            <p className="sidebar__brand-name">KiokuAI</p>
 
             <p className="sidebar__brand-label">AI Workspace</p>
           </div>
@@ -58,7 +58,7 @@ function Sidebar() {
         <div className="sidebar__platform">
           <Sparkles size={16} strokeWidth={1.8} />
 
-          <span>Deneb Platform</span>
+          <span>KiokuAI Platform</span>
         </div>
 
         <button

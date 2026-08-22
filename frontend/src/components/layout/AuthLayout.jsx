@@ -7,7 +7,9 @@ function AuthLayout({ children }) {
         <div className="auth-brand">
           <div className="auth-brand__mark">D</div>
 
-          <span className="auth-brand__name">Deneb</span>
+          <p className="auth-layout__footer">
+            KiokuAI — AI-powered knowledge workspace
+          </p>
         </div>
 
         <div className="auth-hero">
@@ -55,7 +57,9 @@ function AuthLayout({ children }) {
           </div>
         </div>
 
-        <p className="auth-layout__footer">Deneb AI Chatbot Platform</p>
+        <p className="auth-layout__footer">
+          KiokuAI — AI-powered knowledge workspace
+        </p>
       </section>
 
       <section className="auth-layout__form">

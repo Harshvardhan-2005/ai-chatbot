@@ -1,4 +1,4 @@
-const ACCESS_TOKEN_KEY = "deneb_access_token";
+const ACCESS_TOKEN_KEY = "kiokuai_access_token";
 
 export function getAccessToken() {
   return localStorage.getItem(ACCESS_TOKEN_KEY);

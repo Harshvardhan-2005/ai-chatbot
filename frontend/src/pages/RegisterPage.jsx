@@ -94,7 +94,7 @@ function RegisterPage() {
         <div className="auth-card__header">
           <p className="auth-card__eyebrow">Get started</p>
 
-          <h1 className="auth-card__title">Create your Deneb account</h1>
+          <h1 className="auth-card__title">Create your KiokuAI account</h1>
 
           <p className="auth-card__description">
             Start creating assistants and grounding them with your knowledge.

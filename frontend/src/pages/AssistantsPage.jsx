@@ -126,7 +126,7 @@ function AssistantsPage() {
   return (
     <div className="workspace-page">
       <PageHeader
-        eyebrow="Deneb Workspace"
+        eyebrow="KiokuAI Workspace"
         title="Assistants"
         description="Create, configure, and manage your AI assistants."
         actions={
