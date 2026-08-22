@@ -21,10 +21,15 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "https://deneb-ai-chatbot.vercel.app",
-    ],
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+
+    # Production frontend
+    "https://deneb-ai-chatbot.vercel.app",
+
+    # Current Vercel deployment
+    "https://deneb-ai-chatbot-72vjpdpy9-harshs-projects-9d7928ce.vercel.app",
+],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
